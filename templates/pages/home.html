@@ -27,6 +27,23 @@ this is amazing!!!!
     Loading...
 </div>
 <script>
+    function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
     function handleTweetFormError(msg, dispaly){
         var myErrorDiv = document.getElementById("tweet-create-form-error")
         if (dispaly === true){
@@ -150,15 +167,42 @@ this is amazing!!!!
     loadTweets(tweetsContainerElement)
 
     // counter function which adds a number to tweet
-    function handleDidLike (tweet_id, currentCount){
+    function handleTweetActionBtn(tweet_id, currentCount, action){
         console.log(tweet_id, currentCount)
-        currentCount++
+        const url = "/api/tweets/action"
+        const method="POST"
+        const data = JSON.stringify({
+            id: tweet_id,
+            action: action
+        })
+        const xhr = new XMLHttpRequest()
+        const csrftoken = getCookie('csrftoken');
+        xhr.open(method, url)
+        xhr.setRequestHeader("Content-Type", "application/json")
+        xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+        xhr.onload = function() {
+            //console.log(xhr.status, xhr.response)
+            loadTweets(tweetsContainerElement)
+        }
+        xhr.send(data)
         return
+        }
+    // function to print unlike button 
+    function RetweetBtn(tweet) {
+        return "<button class='btn btn-outline-success btn-sm' onclick=handleTweetActionBtn(" + 
+        tweet.id + "," + tweet.likes + ",'retweet')>Retweet</button>"
+        }
+    // function to print unlike button 
+    function UnLikeBtn(tweet) {
+        return "<button class='btn btn-outline-primary btn-sm' onclick=handleTweetActionBtn(" + 
+        tweet.id + "," + tweet.likes + ",'unlike')>UnLike</button>"
         }
     // function to print like button 
     function LikeBtn(tweet) {
-        return "<button class='btn btn-primary btn-sm' onclick=handleDidLike(" + 
-        tweet.id + "," + tweet.likes + ")>" + tweet.likes + " Likes</button>"
+        return "<button class='btn btn-primary btn-sm' onclick=handleTweetActionBtn(" + 
+        tweet.id + "," + tweet.likes + ",'like')>" + tweet.likes + " Likes</button>"
         }
     // This function is called inisde xhr function and funtions 
     // takes json tweet data every time and return it formated with
@@ -166,7 +210,10 @@ this is amazing!!!!
     function formatTweetElement(tweet){
         var formatedTweet = "<div class='col-12 col-md-10 mx-auto py-3 border rounded mb-4 tweet' id='tweet-" + tweet.id 
         + "'><p>" + tweet.content +          
-            "</p><div class='btn-group'>" + LikeBtn(tweet) +
+            "</p><div class='btn-group'>" + 
+                LikeBtn(tweet) + 
+                UnLikeBtn(tweet) +
+                RetweetBtn(tweet) +
             "</div></div>"
         return formatedTweet
     }
