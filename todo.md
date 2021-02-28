@@ -2,7 +2,7 @@ I have stopped follwing video at
 Next I am doing
 33 users and tweet
 
-4:24:19 Retweeting Logic
+stopping at nodejs installation
 
 https://github.com/codingforentrepreneurs/Tweetme-2
 
