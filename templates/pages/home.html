@@ -55,6 +55,9 @@ this is amazing!!!!
             myErrorDiv.setAttribute("class", "d-none alert alert-danger")
         }
     }
+  // #########################################################################################################################################################################################
+                                            // handleTweetCreateFormDidSubmit(event) This functions make a request to django api for tweet data and handles server error validation 
+    //##########################################################################################################################################################################################
     function handleTweetCreateFormDidSubmit(event) {
         event.preventDefault()
         const myForm = event.target
@@ -132,13 +135,23 @@ this is amazing!!!!
     }
     const tweetCreateFormEl = document.getElementById("tweet-create-form")
 
-    tweetCreateFormEl.addEventListener("submit", handleTweetCreateFormDidSubmit)
-
     // This (tweetsEl) is a div in which all tweets will get loaded in:
+    // this function is added to an event listner and when event happens this function takes callback fucntion (handleTweetCreateFormDidSubmit) as parameter 
+    // and that call back function is getting all tweet data from django aPi, the same function is also handeling server side error valiadation and 
+    // using if else logic function determines what server error response is given like 401, 400, 200, 201 and act according to that servre respnose
+    tweetCreateFormEl.addEventListener("submit", handleTweetCreateFormDidSubmit)
+// #########################################################################################################################################################################################
+//##########################################################################################################################################################################################
+                                                    // Main Logic Ends here
+    
+    
+    // #########################################################################################################################################################################################
+                                            // This (loadTweets) is a XHR function which is taking in data from 
+                                            // server side and we we are passing in above tweetsEL as container to display tweets data
+                                            //  inside it:
+    //##########################################################################################################################################################################################
+        // below is the html container where load tweet function load all data
     const tweetsContainerElement = document.getElementById("tweets");
-    // This (loadTweets) is a XHR function which is taking in data from 
-    // server side and we we are passing in above tweetsEL as container to display
-    // all twwets inside it:
     function loadTweets(tweetsElement){
         const xhr = new XMLHttpRequest()
         const method = 'GET'
@@ -190,6 +203,11 @@ this is amazing!!!!
         return
         }
     // function to print unlike button 
+    // #########################################################################################################################################################################################
+                                // Below are the 3 tweet action button which calls above handleTweetActionBtn(tweet_id, currentCount, action) passing its function values to functions and 
+                                // above funcition is makes  request to django APi where action parameter in function tells django if user liked, unliked or re-tweeted and id tells
+                                // what tweet is it.
+    //##########################################################################################################################################################################################
     function RetweetBtn(tweet) {
         return "<button class='btn btn-outline-success btn-sm' onclick=handleTweetActionBtn(" + 
         tweet.id + "," + tweet.likes + ",'retweet')>Retweet</button>"
@@ -204,6 +222,9 @@ this is amazing!!!!
         return "<button class='btn btn-primary btn-sm' onclick=handleTweetActionBtn(" + 
         tweet.id + "," + tweet.likes + ",'like')>" + tweet.likes + " Likes</button>"
         }
+    // #########################################################################################################################################################################################
+                                                // TWEET LIKE / UNLIKE / Retweet Logic 3 buttons are above
+    //##########################################################################################################################################################################################
     // This function is called inisde xhr function and funtions 
     // takes json tweet data every time and return it formated with
     // adding twwet button
